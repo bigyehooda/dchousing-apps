@@ -1,0 +1,17 @@
+<ul class="list-group">
+  <%= render 'maybe', attribute: "From", object: residence.start %>
+  <%= render 'maybe', attribute: "To", object: residence.end_or_current %>
+  <%= render 'maybe', attribute: "At", object: residence.address.full %>
+</ul>
+
+<div class="panel-heading">
+Landlord
+</div>
+
+<ul class="list-group">
+  <%= render 'maybe', attribute: "Name", object: residence.landlord.full_name %>
+  <%= render 'maybe', attribute: "Address", object: residence.landlord.mail_address.full %>
+  <% %w(cell_phone home_phone work_phone email).each do |attribute_name| %>
+    <%= render 'maybe', attribute: attribute_name.humanize, object: residence.landlord[attribute_name] %>
+  <% end %>
+</ul>

@@ -1,8 +1,7 @@
 class Address < ActiveRecord::Base
+  include Progress
 
   belongs_to :applicant
-
-  attr_accessible :street, :city, :state, :zip, :apt
 
   def apartment
     case apt
@@ -21,6 +20,10 @@ class Address < ActiveRecord::Base
     else
     "#{street}, #{apartment}, #{city}, #{state}, #{zip}".gsub(/( ,)+/, "").strip.sub(/,$/, "")
     end
+  end
+
+  def to_s
+    full
   end
 
   def value_for_field field_name

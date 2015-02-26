@@ -2,51 +2,50 @@ require "test_helper"
 
 class ResidencesControllerTest < ActionController::TestCase
 
-  include Devise::TestHelpers
+  def setup
+    sign_in users(:one)
+  end
 
   def residence
     @residence ||= residences :one
   end
 
-  def test_index
-    get :index
-    assert_response :success
-    assert_not_nil assigns(:residences)
-  end
-
   def test_new
-    get :new
-    assert_response :success
-  end
-
-  def test_create
     assert_difference('Residence.count') do
-      post :create, residence: { address_id: @residence.address_id, applicant_id: @residence.applicant_id, end: @residence.end, landlord_id: @residence.landlord_id, reason: @residence.reason, start: @residence.start }
+      get :new, applicant_id: applicants(:one)
     end
 
-    assert_redirected_to residence_path(assigns(:residence))
-  end
-
-  def test_show
-    get :show, id: residence
-    assert_response :success
+    assert_redirected_to edit_applicant_residence_path(applicants(:one), assigns(:model))
   end
 
   def test_edit
-    get :edit, id: residence
+    get :edit, applicant_id: applicants(:one), id: residences(:one)
     assert_response :success
   end
 
-  def test_update
-    put :update, id: residence, residence: { address_id: @residence.address_id, applicant_id: @residence.applicant_id, end: @residence.end, landlord_id: @residence.landlord_id, reason: @residence.reason, start: @residence.start }
-    assert_redirected_to residence_path(assigns(:residence))
+  def test_edit_empty
+    get :front, applicant_id: applicants(:empty)
+    assert_response :success
   end
 
   def test_destroy
     assert_difference('Residence.count', -1) do
-      delete :destroy, id: residence
+      delete :destroy, applicant_id: applicants(:one), id: residence
     end
 
-    assert_redirected_to residences_path
+    assert_redirected_to applicants(:one)
   end
+
+  def test_update
+    residence_update_hash = {
+      start: "2000-01-01",
+      end: "2010-01-01",
+      current: true,
+      reason: "x",
+    }
+    put :update, applicant_id: applicants(:one), id: residence, residence: residence_update_hash
+    assert_attributes_were_updated residences(:one), residence_update_hash.keys
+    assert_redirected_to edit_applicant_residence_path(applicants(:one), residence)
+  end
+
 end

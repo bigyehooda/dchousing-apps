@@ -7,7 +7,7 @@ class ResidenceTest < ActiveSupport::TestCase
   end
 
   def test_valid
-    assert residence.valid?
+    assert residence.valid?, residence.errors.messages
   end
 
 end
